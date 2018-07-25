@@ -18,6 +18,9 @@ public class VertxSpringApplication {
     @Autowired
     private GreetingVerticle greetingVerticle;
 
+    @Autowired
+    private ServerVerticle serverVerticle;
+
     public static void main(String[] args) {
         SpringApplication.run(VertxSpringApplication.class, args);
     }
@@ -31,6 +34,7 @@ public class VertxSpringApplication {
     public void VertxSprintApplication() {
         vertx().deployVerticle(greetingVerticle);
         vertx().deployVerticle(helloWorldVerticle);
+        vertx().deployVerticle(serverVerticle);
     }
 
 }
