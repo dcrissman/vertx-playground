@@ -1,7 +1,5 @@
 package playground.vertx;
 
-import javax.annotation.PostConstruct;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;

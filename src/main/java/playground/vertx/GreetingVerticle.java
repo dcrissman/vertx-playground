@@ -20,7 +20,7 @@ public class GreetingVerticle extends AbstractVerticle {
     @Override
     public void start(Future<Void> startFuture) throws Exception {
         vertx.eventBus()
-                .localConsumer("greeting")
+                .consumer("greeting")
                 .handler(event -> event.reply(
                         "Greetings " + event.body().toString()));
         startFuture.complete();
