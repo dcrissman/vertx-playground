@@ -15,14 +15,20 @@ public class HelloWorldVerticle extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(
             HelloWorldVerticle.class);
 
+    private final Vertx vertx;
+
     @Autowired
-    private Vertx vertx;
+    public HelloWorldVerticle(Vertx vertx) {
+        this.vertx = vertx;
+    }
 
     @Override
     public void start(Future<Void> startFuture) throws Exception {
-        vertx.eventBus().send("greeting", "Frank Castle");
-
-        LOGGER.info("Hello World!");
+        vertx.eventBus().send("greeting", "World", response -> {
+            if (response.succeeded()) {
+                LOGGER.info(response.result().body().toString());
+            }
+        });
 
         startFuture.complete();
     }

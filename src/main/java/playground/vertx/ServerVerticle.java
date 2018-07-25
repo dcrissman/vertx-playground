@@ -11,16 +11,30 @@ import io.vertx.ext.web.Router;
 @Component
 public class ServerVerticle extends AbstractVerticle {
 
+    private final Vertx vertx;
+    
     @Autowired
-    private Vertx vertx;
+    public ServerVerticle(Vertx vertx) {
+        this.vertx = vertx;
+    }
 
     @Override
     public void start(Future<Void> startFuture) throws Exception {
         final Router router = Router.router(vertx);
         router.get("/jones")
-        .handler(routingContext -> {
-            routingContext.response().setChunked(true);
-            routingContext.response().write("Greetings Indiana Jones");
+            .handler(routingContext -> {
+                routingContext.response().setChunked(true);
+                
+                vertx.eventBus().send("greeting", "Mr. Jones", response -> {
+                    if (response.succeeded()) {
+                        routingContext.response().write(response.result().body().toString());
+                    }
+                    else {
+                        routingContext.response().write("failed");
+                    }
+                });
+                
+                
         });
 
         vertx.createHttpServer()

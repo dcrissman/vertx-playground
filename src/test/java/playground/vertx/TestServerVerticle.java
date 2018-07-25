@@ -1,5 +1,7 @@
 package playground.vertx;
 
+import javax.annotation.PostConstruct;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -35,6 +37,7 @@ public class TestServerVerticle {
 
     @Before
     public void before(TestContext tc) {
+        vertx.deployVerticle(new GreetingVerticle(vertx));
         vertx.deployVerticle(serverVerticle,
                 tc.asyncAssertSuccess());
     }
@@ -51,7 +54,7 @@ public class TestServerVerticle {
         vertx.createHttpClient()
             .getNow(8181, "localhost", "/jones", response -> {
                 response.handler(responseBody -> {
-                    tc.assertTrue(responseBody.toString().equalsIgnoreCase("Greetings Indiana Jones"));
+                    tc.assertTrue(responseBody.toString().equalsIgnoreCase("Greetings Mr. Jones"));
                 });
                 async.complete();
             });
@@ -65,8 +68,8 @@ public class TestServerVerticle {
         }
 
         @Bean
-        public ServerVerticle serverVerticle() {
-            return new ServerVerticle();
+        public ServerVerticle serverVerticle(Vertx vertx) {
+            return new ServerVerticle(vertx);
         }
 
     }
