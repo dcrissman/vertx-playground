@@ -50,9 +50,9 @@ public class TestServerVerticle {
         final Async async = tc.async();
 
         vertx.createHttpClient()
-            .getNow(8181, "localhost", "/jones", response -> {
+            .getNow(8181, "localhost", "/greeting/dennis", response -> {
                 response.handler(responseBody -> {
-                    tc.assertTrue(responseBody.toString().equalsIgnoreCase("Greetings Mr. Jones"));
+                    tc.assertTrue(responseBody.toString().equalsIgnoreCase("Greetings Dennis"));
                 });
                 async.complete();
             });

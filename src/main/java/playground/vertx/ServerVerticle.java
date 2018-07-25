@@ -12,7 +12,7 @@ import io.vertx.ext.web.Router;
 public class ServerVerticle extends AbstractVerticle {
 
     private final Vertx vertx;
-    
+
     @Autowired
     public ServerVerticle(Vertx vertx) {
         this.vertx = vertx;
@@ -21,11 +21,13 @@ public class ServerVerticle extends AbstractVerticle {
     @Override
     public void start(Future<Void> startFuture) throws Exception {
         final Router router = Router.router(vertx);
-        router.get("/jones")
+        router.get("/greeting/:name")
             .handler(routingContext -> {
-                routingContext.response().setChunked(true);
+                String name = routingContext.request().getParam("name");
                 
-                vertx.eventBus().send("greeting", "Mr. Jones", response -> {
+                routingContext.response().setChunked(true);
+    
+                vertx.eventBus().send("greeting", name, response -> {
                     if (response.succeeded()) {
                         routingContext.response().write(response.result().body().toString());
                     }
@@ -33,14 +35,12 @@ public class ServerVerticle extends AbstractVerticle {
                         routingContext.response().write("failed");
                     }
                 });
-                
-                
         });
 
         vertx.createHttpServer()
-                .requestHandler(router::accept)
-                .listen(config().getInteger("http.port", 8181));
-        
+            .requestHandler(router::accept)
+            .listen(config().getInteger("http.port", 8181));
+
         startFuture.complete();
     }
 
